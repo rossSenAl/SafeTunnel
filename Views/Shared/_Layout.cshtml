@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <title>SafeTunnel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -19,7 +21,7 @@
         </nav>
     </header>
 
-    <main class="container">
+    <main>
         @RenderBody()
     </main>
 
@@ -27,6 +29,9 @@
         SafeTunnel: aprendizaje interactivo sobre VPN, cifrado y comunicación segura.
     </footer>
 
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
