@@ -1,0 +1,33 @@
+﻿@model List<Simulacion>
+
+<h1>Historial de simulaciones</h1>
+<p class="muted">Datos guardados en SQL Server mediante Entity Framework.</p>
+
+<section class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Modo</th>
+                <th>IP origen</th>
+                <th>IP destino</th>
+                <th>Riesgo</th>
+                <th>Mensaje procesado</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.Modo</td>
+                    <td>@item.IpOrigen</td>
+                    <td>@item.IpDestino</td>
+                    <td>@item.Riesgo</td>
+                    <td class="small-text">@item.MensajeProcesado</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

@@ -1,0 +1,108 @@
+﻿@model SimulacionViewModel
+
+<h1>Simulador de comunicación</h1>
+<p class="muted">Escribe un mensaje y selecciona si deseas enviarlo con VPN o sin VPN.</p>
+
+<section class="layout">
+    <form asp-action="Simulador" method="post" class="card">
+        <label>Mensaje a enviar</label>
+        <textarea asp-for="Mensaje" placeholder="Ejemplo: Mi contraseña es 12345"></textarea>
+        <span asp-validation-for="Mensaje" class="validation"></span>
+
+        <div class="two-cols">
+            <div>
+                <label>IP origen simulada</label>
+                <input asp-for="IpOrigen" />
+            </div>
+
+            <div>
+                <label>IP destino simulada</label>
+                <input asp-for="IpDestino" />
+            </div>
+        </div>
+
+        <div class="button-row">
+            <button class="btn danger-btn" type="submit" name="modo" value="sin_vpn">
+                Enviar sin VPN
+            </button>
+
+            <button class="btn primary" type="submit" name="modo" value="con_vpn">
+                Enviar con VPN
+            </button>
+        </div>
+    </form>
+
+    <div class="card">
+        <h3>Mapa visual de red</h3>
+
+        <div class="network-map">
+            <div class="node">👤<span>Usuario</span></div>
+            <div class="line"></div>
+            <div class="node">📡<span>Router</span></div>
+            <div class="line vpn-line"></div>
+            <div class="node">🔐<span>VPN</span></div>
+            <div class="line"></div>
+            <div class="node">🌐<span>Servidor</span></div>
+        </div>
+
+        <p class="muted">
+            El túnel VPN es una representación visual de protección en la comunicación.
+        </p>
+    </div>
+</section>
+
+@if (!string.IsNullOrEmpty(Model.Modo))
+{
+    var clase = Model.Riesgo == "Bajo" ? "safe" : "risk";
+
+    <section class="result-card @clase">
+        <h2>Resultado de la simulación</h2>
+
+        <div class="result-grid">
+            <div>
+                <strong>Modo</strong>
+                <p>@Model.Modo</p>
+            </div>
+
+            <div>
+                <strong>Riesgo</strong>
+                <p>@Model.Riesgo</p>
+            </div>
+
+            <div>
+                <strong>IP origen</strong>
+                <p>@Model.IpOrigen</p>
+            </div>
+
+            <div>
+                <strong>IP destino</strong>
+                <p>@Model.IpDestino</p>
+            </div>
+
+            <div>
+                <strong>IP VPN</strong>
+                <p>@Model.IpVPN</p>
+            </div>
+        </div>
+
+        <div class="message-box">
+            <h3>Mensaje original</h3>
+            <p>@Model.Mensaje</p>
+        </div>
+
+        <div class="message-box">
+            <h3>@(Model.Modo == "Con VPN" ? "Mensaje cifrado" : "Mensaje visible")</h3>
+            <p>@Model.MensajeProcesado</p>
+        </div>
+
+        <div class="recommendation">
+            <strong>Recomendación:</strong>
+            <p>@Model.Recomendacion</p>
+        </div>
+
+        <div class="route-box">
+            <strong>Ruta:</strong>
+            <span>@Model.Ruta</span>
+        </div>
+    </section>
+}

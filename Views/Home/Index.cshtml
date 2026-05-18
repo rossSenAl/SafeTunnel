@@ -1,0 +1,41 @@
+﻿<section class="hero">
+    <div>
+        <span class="tag">Frontend ASP.NET MVC</span>
+        <h1>SafeTunnel</h1>
+        <h2>Simulador educativo de comunicación segura mediante VPN</h2>
+
+        <p>
+            Esta aplicación representa visualmente cómo viaja un mensaje sin VPN y con VPN.
+            En esta primera etapa funciona como frontend con datos simulados.
+        </p>
+
+        <a class="btn primary" asp-controller="Home" asp-action="Simulador">
+            Iniciar simulación
+        </a>
+    </div>
+
+    <div class="hero-card">
+        <div class="status danger">Sin VPN: datos visibles</div>
+        <p>Usuario → Router → Internet → Servidor final</p>
+
+        <div class="status success">Con VPN: datos protegidos</div>
+        <p>Usuario → Router → Túnel VPN → Servidor VPN → Servidor final</p>
+    </div>
+</section>
+
+<section class="grid-3">
+    <article class="card">
+        <h3>Ingeniería de Software</h3>
+        <p>Interfaz web, formulario, módulos, navegación y presentación visual.</p>
+    </article>
+
+    <article class="card">
+        <h3>Seguridad de Sistemas</h3>
+        <p>Cifrado educativo, nivel de riesgo y recomendaciones de seguridad.</p>
+    </article>
+
+    <article class="card">
+        <h3>Redes 3</h3>
+        <p>IP origen, IP destino, router, servidor VPN y túnel seguro.</p>
+    </article>
+</section>

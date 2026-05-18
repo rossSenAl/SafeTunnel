@@ -1,0 +1,56 @@
+﻿<h1>Dashboard visual</h1>
+<p class="muted">Esta pantalla usa datos de ejemplo hasta conectarse con la base de datos.</p>
+
+<section class="grid-3">
+    <article class="card metric">
+        <span>Total</span>
+        <strong>@ViewBag.Total</strong>
+        <p>simulaciones de ejemplo</p>
+    </article>
+
+    <article class="card metric safe-text">
+        <span>Con VPN</span>
+        <strong>@ViewBag.ConVPN</strong>
+        <p>comunicaciones protegidas</p>
+    </article>
+
+    <article class="card metric danger-text">
+        <span>Sin VPN</span>
+        <strong>@ViewBag.SinVPN</strong>
+        <p>comunicaciones expuestas</p>
+    </article>
+</section>
+
+<section class="card">
+    <h2>Eventos de seguridad simulados</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>Evento</th>
+                <th>Nivel</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>@ViewBag.Evento1</td>
+                <td>Alto</td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>@ViewBag.Evento2</td>
+                <td>Bajo</td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>@ViewBag.Evento3</td>
+                <td>Medio</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
