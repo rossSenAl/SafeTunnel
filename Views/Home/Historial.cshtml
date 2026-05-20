@@ -1,33 +1,149 @@
-﻿@model List<Simulacion>
+﻿@model IEnumerable<SafeTunnel.Models.Simulacion>
 
-<h1>Historial de simulaciones</h1>
-<p class="muted">Datos guardados en SQL Server mediante Entity Framework.</p>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Historial";
 
-<section class="card">
-    <table>
-        <thead>
-            <tr>
-                <th>Fecha</th>
-                <th>Modo</th>
-                <th>IP origen</th>
-                <th>IP destino</th>
-                <th>Riesgo</th>
-                <th>Mensaje procesado</th>
-            </tr>
-        </thead>
+    int total = Model?.Count() ?? 0;
+    int conVpn = Model?.Count(s => s.Modo == "Con VPN") ?? 0;
+    int sinVpn = Model?.Count(s => s.Modo == "Sin VPN") ?? 0;
+}
 
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@item.Modo</td>
-                    <td>@item.IpOrigen</td>
-                    <td>@item.IpDestino</td>
-                    <td>@item.Riesgo</td>
-                    <td class="small-text">@item.MensajeProcesado</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<section class="history-page">
+
+    <div class="history-header panel">
+        <div>
+            <span class="badge-soft">Registro de actividad</span>
+            <h1 class="page-title">Historial</h1>
+            <p class="page-subtitle">
+                Consulta las simulaciones realizadas, el modo de conexión, las IP utilizadas,
+                el nivel de riesgo y la ruta del mensaje.
+            </p>
+        </div>
+
+        <div class="history-icon">
+            📁
+        </div>
+    </div>
+
+    <div class="history-stats">
+        <div class="history-stat-card">
+            <span>Total</span>
+            <strong>@total</strong>
+            <p>Simulaciones registradas</p>
+        </div>
+
+        <div class="history-stat-card secure">
+            <span>Con VPN</span>
+            <strong>@conVpn</strong>
+            <p>Comunicaciones protegidas</p>
+        </div>
+
+        <div class="history-stat-card danger">
+            <span>Sin VPN</span>
+            <strong>@sinVpn</strong>
+            <p>Comunicaciones expuestas</p>
+        </div>
+    </div>
+
+    <div class="panel history-table-panel">
+        <div class="history-table-title">
+            <div>
+                <h2>Registros almacenados</h2>
+                <p>
+                    Estos datos provienen de la tabla de simulaciones guardada en SQL Server.
+                </p>
+            </div>
+
+            <div class="history-actions">
+                <a asp-controller="Home" asp-action="Simulador" class="btn-primary-soft">
+                    Nueva simulación
+                </a>
+
+                <a asp-controller="Home" asp-action="Dashboard" class="btn-secondary-soft">
+                    Ver dashboard
+                </a>
+            </div>
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-history">
+                <div class="empty-icon">🧪</div>
+                <h3>No hay simulaciones registradas</h3>
+                <p>
+                    Todavía no se guardaron transmisiones. Realiza una simulación para que aparezca aquí.
+                </p>
+
+                <a asp-controller="Home" asp-action="Simulador" class="btn-primary-soft">
+                    Ir al simulador
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="history-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Modo</th>
+                            <th>Mensaje original</th>
+                            <th>Mensaje procesado</th>
+                            <th>IP origen</th>
+                            <th>IP destino</th>
+                            <th>IP VPN</th>
+                            <th>Riesgo</th>
+                            <th>Ruta</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            bool esVpn = item.Modo == "Con VPN";
+
+                            <tr>
+                                <td>
+                                    <strong>@item.Fecha.ToString("dd/MM/yyyy")</strong>
+                                    <span>@item.Fecha.ToString("HH:mm")</span>
+                                </td>
+
+                                <td>
+                                    <span class="mode-badge @(esVpn ? "secure" : "danger")">
+                                        @item.Modo
+                                    </span>
+                                </td>
+
+                                <td class="message-cell">
+                                    @item.MensajeOriginal
+                                </td>
+
+                                <td class="message-cell processed">
+                                    @item.MensajeProcesado
+                                </td>
+
+                                <td>@item.IpOrigen</td>
+
+                                <td>@item.IpDestino</td>
+
+                                <td>@item.IpVPN</td>
+
+                                <td>
+                                    <span class="risk-badge @(esVpn ? "secure" : "danger")">
+                                        @item.Riesgo
+                                    </span>
+                                </td>
+
+                                <td class="route-cell">
+                                    @item.Ruta
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
 </section>

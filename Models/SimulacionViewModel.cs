@@ -7,20 +7,33 @@ namespace SafeTunnel.Models
         [Required(ErrorMessage = "Debe ingresar un mensaje.")]
         public string Mensaje { get; set; } = string.Empty;
 
-        public string IpOrigen { get; set; } = "192.168.1.25";
+        [Required(ErrorMessage = "Debe ingresar una IP de origen.")]
+        public string IpOrigen { get; set; } = string.Empty;
 
-        public string IpDestino { get; set; } = "200.58.120.10";
+        [Required(ErrorMessage = "Debe ingresar una IP de destino.")]
+        public string IpDestino { get; set; } = string.Empty;
 
-        public string? Modo { get; set; }
+        public string Modo { get; set; } = string.Empty;
 
-        public string? MensajeProcesado { get; set; }
+        public string MensajeProcesado { get; set; } = string.Empty;
 
-        public string? IpVPN { get; set; }
+        public string IpVPN { get; set; } = string.Empty;
 
-        public string? Riesgo { get; set; }
+        public string Riesgo { get; set; } = string.Empty;
 
-        public string? Recomendacion { get; set; }
+        public string Recomendacion { get; set; } = string.Empty;
 
-        public string? Ruta { get; set; }
+        public string Ruta { get; set; } = string.Empty;
+
+        public bool SimularAtaque { get; set; }
+
+        public string HashOriginal { get; set; } = string.Empty;
+
+        public string HashRecibido { get; set; } = string.Empty;
+
+        public bool IntegridadValida { get; set; }
+
+        public string MensajeInterceptado { get; set; } = string.Empty;
+      
     }
 }

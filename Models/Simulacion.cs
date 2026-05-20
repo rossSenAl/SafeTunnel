@@ -26,5 +26,14 @@ namespace SafeTunnel.Models
         public string Ruta { get; set; } = string.Empty;
 
         public DateTime Fecha { get; set; } = DateTime.Now;
+        public string HashOriginal { get; set; } = string.Empty;
+
+        public string HashRecibido { get; set; } = string.Empty;
+
+        public bool IntegridadValida { get; set; }
+
+        public bool AtaqueSimulado { get; set; }
+
+        public string MensajeInterceptado { get; set; } = string.Empty;
     }
 }

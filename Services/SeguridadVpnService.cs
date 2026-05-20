@@ -7,51 +7,65 @@ namespace SafeTunnel.Services
 {
     public class SeguridadVpnService
     {
-        private readonly byte[] _key;
-        private readonly byte[] _iv;
+        private const string Key = "SafeTunnel-Clave-Demo-2026";
 
-        public SeguridadVpnService()
+        private byte[] ObtenerClave()
         {
-            string claveDemo = "SafeTunnel-Clave-Demo-2026";
-            string ivDemo = "SafeTunnel-IV-Demo";
-
-            _key = SHA256.HashData(Encoding.UTF8.GetBytes(claveDemo));
-            _iv = MD5.HashData(Encoding.UTF8.GetBytes(ivDemo));
+            return SHA256.HashData(Encoding.UTF8.GetBytes(Key));
         }
 
         public string Cifrar(string texto)
         {
-            using Aes aes = Aes.Create();
-            aes.Key = _key;
-            aes.IV = _iv;
+            byte[] keyBytes = ObtenerClave();
 
-            ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = keyBytes;
+                aes.GenerateIV();
 
-            using MemoryStream ms = new MemoryStream();
-            using CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write);
-            using StreamWriter sw = new StreamWriter(cs);
+                byte[] iv = aes.IV;
 
-            sw.Write(texto);
-            sw.Close();
+                using (var encryptor = aes.CreateEncryptor(aes.Key, iv))
+                using (var ms = new MemoryStream())
+                {
+                    ms.Write(iv, 0, iv.Length);
 
-            return Convert.ToBase64String(ms.ToArray());
+                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    using (var sw = new StreamWriter(cs))
+                    {
+                        sw.Write(texto);
+                    }
+
+                    return Convert.ToBase64String(ms.ToArray());
+                }
+            }
         }
 
         public string Descifrar(string textoCifrado)
         {
-            byte[] buffer = Convert.FromBase64String(textoCifrado);
+            byte[] fullCipher = Convert.FromBase64String(textoCifrado);
 
-            using Aes aes = Aes.Create();
-            aes.Key = _key;
-            aes.IV = _iv;
+            byte[] iv = new byte[16];
+            byte[] cipher = new byte[fullCipher.Length - iv.Length];
 
-            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+            Array.Copy(fullCipher, iv, iv.Length);
+            Array.Copy(fullCipher, iv.Length, cipher, 0, cipher.Length);
 
-            using MemoryStream ms = new MemoryStream(buffer);
-            using CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
-            using StreamReader sr = new StreamReader(cs);
+            byte[] keyBytes = ObtenerClave();
 
-            return sr.ReadToEnd();
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = keyBytes;
+                aes.IV = iv;
+
+                using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))
+                using (var ms = new MemoryStream(cipher))
+                using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                using (var sr = new StreamReader(cs))
+                {
+                    return sr.ReadToEnd();
+                }
+            }
         }
 
         public string GenerarHash(string texto)
@@ -60,6 +74,18 @@ namespace SafeTunnel.Services
             byte[] hash = SHA256.HashData(bytes);
 
             return Convert.ToHexString(hash);
+        }
+
+        public static string Encrypt(string text)
+        {
+            var service = new SeguridadVpnService();
+            return service.Cifrar(text);
+        }
+
+        public static string Decrypt(string encryptedText)
+        {
+            var service = new SeguridadVpnService();
+            return service.Descifrar(encryptedText);
         }
     }
 }

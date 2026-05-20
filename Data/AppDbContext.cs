@@ -12,5 +12,6 @@ namespace SafeTunnel.Data
 
         public DbSet<Simulacion> Simulaciones { get; set; }
         public DbSet<TransmisionVpn> TransmisionesVpn { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }

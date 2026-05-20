@@ -1,23 +1,151 @@
-﻿<h1>Recomendaciones de seguridad</h1>
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Recomendaciones";
+}
 
-<section class="grid-2">
-    <article class="card">
-        <h3>Evitar redes públicas inseguras</h3>
-        <p>No se recomienda enviar contraseñas o información sensible desde redes abiertas sin protección.</p>
-    </article>
+<section class="recommendations-page">
 
-    <article class="card">
-        <h3>Usar VPN en redes desconocidas</h3>
-        <p>Una VPN ayuda a proteger la comunicación mediante un túnel seguro y cifrado.</p>
-    </article>
+    <div class="recommendations-header panel">
+        <div>
+            <span class="badge-soft">Buenas prácticas</span>
+            <h1 class="page-title">Recomendaciones de seguridad</h1>
+            <p class="page-subtitle">
+                Consejos educativos para comprender cómo proteger la información
+                cuando se transmite por redes públicas o privadas.
+            </p>
+        </div>
 
-    <article class="card">
-        <h3>Verificar sitios HTTPS</h3>
-        <p>Antes de ingresar datos personales, se debe revisar que el sitio web utilice HTTPS.</p>
-    </article>
+        <div class="recommendations-icon">
+            🛡️
+        </div>
+    </div>
 
-    <article class="card">
-        <h3>No compartir contraseñas</h3>
-        <p>Las contraseñas deben ser privadas, fuertes y diferentes para cada servicio.</p>
-    </article>
+    <div class="recommendations-grid">
+
+        <div class="recommendation-card important">
+            <div class="recommendation-card-icon">🔐</div>
+            <h3>Usar VPN en redes públicas</h3>
+            <p>
+                Cuando te conectas a redes WiFi públicas, como cafeterías, aeropuertos
+                o universidades, una VPN ayuda a proteger la información que viaja por la red.
+            </p>
+        </div>
+
+        <div class="recommendation-card">
+            <div class="recommendation-card-icon">📨</div>
+            <h3>No enviar datos sensibles sin protección</h3>
+            <p>
+                Evita enviar contraseñas, datos bancarios o información privada cuando
+                la conexión no está cifrada o no es confiable.
+            </p>
+        </div>
+
+        <div class="recommendation-card">
+            <div class="recommendation-card-icon">🧬</div>
+            <h3>Verificar la integridad del mensaje</h3>
+            <p>
+                El uso de hash permite comprobar si un mensaje fue modificado durante
+                la transmisión, ayudando a detectar alteraciones.
+            </p>
+        </div>
+
+        <div class="recommendation-card">
+            <div class="recommendation-card-icon">🌐</div>
+            <h3>Proteger la dirección IP</h3>
+            <p>
+                Una VPN puede ocultar la IP real del usuario y reemplazarla por una IP
+                protegida, reduciendo la exposición en la red.
+            </p>
+        </div>
+
+        <div class="recommendation-card">
+            <div class="recommendation-card-icon">🔑</div>
+            <h3>Usar contraseñas seguras</h3>
+            <p>
+                Las contraseñas deben ser largas, diferentes para cada servicio y no deben
+                compartirse. También es recomendable usar autenticación adicional.
+            </p>
+        </div>
+
+        <div class="recommendation-card">
+            <div class="recommendation-card-icon">⚠️</div>
+            <h3>Evitar redes desconocidas</h3>
+            <p>
+                Las redes abiertas pueden ser usadas por atacantes para interceptar tráfico.
+                Antes de conectarte, verifica que la red sea confiable.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="panel recommendations-comparison">
+        <div>
+            <h2>¿Qué demuestra SafeTunnel?</h2>
+            <p>
+                SafeTunnel permite observar la diferencia entre una comunicación sin VPN
+                y una comunicación protegida mediante un túnel VPN simulado.
+            </p>
+        </div>
+
+        <div class="comparison-list">
+            <div class="comparison-item danger">
+                <span>Sin VPN</span>
+                <strong>Datos visibles</strong>
+                <p>El mensaje puede quedar expuesto durante el recorrido.</p>
+            </div>
+
+            <div class="comparison-item secure">
+                <span>Con VPN</span>
+                <strong>Datos cifrados</strong>
+                <p>El mensaje viaja protegido dentro de un túnel seguro.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="security-tips-panel">
+        <h2>Resumen de aprendizaje</h2>
+
+        <div class="tips-timeline">
+            <div class="tip-step">
+                <div class="tip-number">1</div>
+                <div>
+                    <h3>Confidencialidad</h3>
+                    <p>
+                        El cifrado ayuda a que terceros no puedan leer fácilmente el contenido del mensaje.
+                    </p>
+                </div>
+            </div>
+
+            <div class="tip-step">
+                <div class="tip-number">2</div>
+                <div>
+                    <h3>Integridad</h3>
+                    <p>
+                        El hash permite comprobar si el mensaje fue alterado durante la transmisión.
+                    </p>
+                </div>
+            </div>
+
+            <div class="tip-step">
+                <div class="tip-number">3</div>
+                <div>
+                    <h3>Protección de identidad</h3>
+                    <p>
+                        La IP VPN simulada representa cómo se puede ocultar la IP real del usuario.
+                    </p>
+                </div>
+            </div>
+
+            <div class="tip-step">
+                <div class="tip-number">4</div>
+                <div>
+                    <h3>Educación en redes</h3>
+                    <p>
+                        La ruta visual ayuda a comprender el recorrido del mensaje desde el cliente hasta el servidor.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </section>

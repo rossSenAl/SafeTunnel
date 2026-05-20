@@ -1,0 +1,41 @@
+﻿@model SafeTunnel.Models.LoginViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">
+                🔐
+            </div>
+            <h1>Iniciar sesión</h1>
+            <p>Accede a tu cuenta de SafeTunnel</p>
+        </div>
+
+        <form asp-controller="Cuenta" asp-action="Login" method="post" class="auth-form">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+            <label asp-for="Correo">Correo electrónico</label>
+            <input asp-for="Correo" placeholder="usuario@ejemplo.com" />
+            <span asp-validation-for="Correo" class="field-validation-error"></span>
+
+            <label asp-for="Password">Contraseña</label>
+            <input asp-for="Password" type="password" placeholder="••••••••" />
+            <span asp-validation-for="Password" class="field-validation-error"></span>
+
+            <button type="submit" class="auth-button">
+                ✨ Iniciar sesión
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            ¿No tienes cuenta?
+            <a asp-controller="Cuenta" asp-action="Registro">Regístrate aquí</a>
+        </div>
+    </div>
+</div>

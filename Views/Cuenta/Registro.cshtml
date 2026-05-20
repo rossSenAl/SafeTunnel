@@ -1,0 +1,49 @@
+﻿@model SafeTunnel.Models.RegistroViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Crear cuenta";
+}
+
+<div class="auth-page">
+    <div class="auth-card auth-card-large">
+        <div class="auth-header">
+            <div class="auth-icon">
+                🚀
+            </div>
+            <h1>Crear cuenta</h1>
+            <p>Únete a SafeTunnel y aprende sobre seguridad digital</p>
+        </div>
+
+        <form asp-controller="Cuenta" asp-action="Registro" method="post" class="auth-form">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+            <label asp-for="Nombre">Nombre completo</label>
+            <input asp-for="Nombre" placeholder="Ej: Juan Pérez" />
+            <span asp-validation-for="Nombre" class="field-validation-error"></span>
+
+            <label asp-for="Correo">Correo electrónico</label>
+            <input asp-for="Correo" placeholder="usuario@ejemplo.com" type="email" />
+            <span asp-validation-for="Correo" class="field-validation-error"></span>
+
+            <label asp-for="Password">Contraseña</label>
+            <input asp-for="Password" type="password" placeholder="Crea una contraseña segura" />
+            <span asp-validation-for="Password" class="field-validation-error"></span>
+
+            <label asp-for="ConfirmarPassword">Confirmar contraseña</label>
+            <input asp-for="ConfirmarPassword" type="password" placeholder="Repite tu contraseña" />
+            <span asp-validation-for="ConfirmarPassword" class="field-validation-error"></span>
+
+            <button type="submit" class="auth-button" style="background: linear-gradient(135deg, #16a34a, #22c55e);">
+                🎉 Registrarme
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            ¿Ya tienes cuenta?
+            <a asp-controller="Cuenta" asp-action="Login">Inicia sesión aquí</a>
+        </div>
+    </div>
+</div>

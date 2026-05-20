@@ -5,33 +5,53 @@
     <title>SafeTunnel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    <header class="navbar">
-        <div class="brand">🔐 SafeTunnel</div>
+    <header class="topbar">
+        <div class="layout-shell nav-shell">
+            <a class="brand" asp-controller="Home" asp-action="Index">
+                <span class="brand-icon">🔐</span>
+                <span>SafeTunnel</span>
+            </a>
 
-        <nav>
-            <a asp-controller="Home" asp-action="Index">Inicio</a>
-            <a asp-controller="Home" asp-action="Simulador">Simulador</a>
-            <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
-            <a asp-controller="Home" asp-action="Historial">Historial</a>
-            <a asp-controller="Home" asp-action="Recomendaciones">Recomendaciones</a>
-        </nav>
+            <nav class="main-nav">
+                <a asp-controller="Home" asp-action="Index">Inicio</a>
+                <a asp-controller="Home" asp-action="Simulador">Simulador</a>
+                <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
+                <a asp-controller="Home" asp-action="Historial">Historial</a>
+                <a asp-controller="Home" asp-action="Recomendaciones">Recomendaciones</a>
+
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <span class="usuario-logueado">👤 @User.Identity.Name</span>
+
+                    <form asp-controller="Cuenta" asp-action="Logout" method="post" class="logout-form">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-logout">Salir</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Cuenta" asp-action="Login">Login</a>
+                    <a asp-controller="Cuenta" asp-action="Registro">Registro</a>
+                }
+            </nav>
+        </div>
     </header>
 
-    <main>
-        @RenderBody()
+    <main class="main-content">
+        <div class="layout-shell page-shell">
+            @RenderBody()
+        </div>
     </main>
 
-    <footer>
-        SafeTunnel: aprendizaje interactivo sobre VPN, cifrado y comunicación segura.
+    <footer class="site-footer">
+        <div class="layout-shell">
+            SafeTunnel: aprendizaje interactivo sobre VPN, cifrado y comunicación segura.
+        </div>
     </footer>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </body>
 </html>

@@ -1,56 +1,153 @@
-﻿<h1>Dashboard visual</h1>
-<p class="muted">Esta pantalla usa datos de ejemplo hasta conectarse con la base de datos.</p>
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Dashboard";
 
-<section class="grid-3">
-    <article class="card metric">
-        <span>Total</span>
-        <strong>@ViewBag.Total</strong>
-        <p>simulaciones de ejemplo</p>
-    </article>
+    int total = Convert.ToInt32(ViewBag.Total ?? 0);
+    int conVpn = Convert.ToInt32(ViewBag.ConVPN ?? 0);
+    int sinVpn = Convert.ToInt32(ViewBag.SinVPN ?? 0);
 
-    <article class="card metric safe-text">
-        <span>Con VPN</span>
-        <strong>@ViewBag.ConVPN</strong>
-        <p>comunicaciones protegidas</p>
-    </article>
+    int porcentajeConVpn = total > 0 ? (conVpn * 100 / total) : 0;
+    int porcentajeSinVpn = total > 0 ? (sinVpn * 100 / total) : 0;
+}
 
-    <article class="card metric danger-text">
-        <span>Sin VPN</span>
-        <strong>@ViewBag.SinVPN</strong>
-        <p>comunicaciones expuestas</p>
-    </article>
-</section>
+<section class="dashboard-page">
 
-<section class="card">
-    <h2>Eventos de seguridad simulados</h2>
+    <div class="dashboard-header panel">
+        <div>
+            <span class="badge-soft">Panel de control</span>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">
+                Resumen general de las simulaciones realizadas en SafeTunnel.
+            </p>
+        </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>N°</th>
-                <th>Evento</th>
-                <th>Nivel</th>
-            </tr>
-        </thead>
+        <div class="dashboard-icon">
+            📊
+        </div>
+    </div>
 
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>@ViewBag.Evento1</td>
-                <td>Alto</td>
-            </tr>
+    <div class="dashboard-grid">
 
-            <tr>
-                <td>2</td>
-                <td>@ViewBag.Evento2</td>
-                <td>Bajo</td>
-            </tr>
+        <div class="dashboard-card total">
+            <div class="dashboard-card-icon">🧪</div>
+            <div>
+                <span>Total de simulaciones</span>
+                <strong>@total</strong>
+                <p>Registros generados en el sistema.</p>
+            </div>
+        </div>
 
-            <tr>
-                <td>3</td>
-                <td>@ViewBag.Evento3</td>
-                <td>Medio</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="dashboard-card secure">
+            <div class="dashboard-card-icon">🔐</div>
+            <div>
+                <span>Con VPN</span>
+                <strong>@conVpn</strong>
+                <p>Mensajes enviados mediante túnel VPN simulado.</p>
+            </div>
+        </div>
+
+        <div class="dashboard-card danger">
+            <div class="dashboard-card-icon">🌐</div>
+            <div>
+                <span>Sin VPN</span>
+                <strong>@sinVpn</strong>
+                <p>Mensajes enviados por red pública simulada.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="dashboard-analysis-grid">
+
+        <div class="panel">
+            <h2 class="section-title">Análisis de seguridad</h2>
+
+            <div class="progress-block">
+                <div class="progress-header">
+                    <span>Uso de VPN</span>
+                    <strong>@porcentajeConVpn%</strong>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill secure" style="width:@porcentajeConVpn%"></div>
+                </div>
+            </div>
+
+            <div class="progress-block">
+                <div class="progress-header">
+                    <span>Envíos sin protección</span>
+                    <strong>@porcentajeSinVpn%</strong>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill danger" style="width:@porcentajeSinVpn%"></div>
+                </div>
+            </div>
+
+            <div class="dashboard-note">
+                @if (total == 0)
+                {
+                    <p>
+                        Todavía no existen simulaciones registradas. Dirígete al simulador
+                        para generar los primeros datos del sistema.
+                    </p>
+                }
+                else if (conVpn >= sinVpn)
+                {
+                    <p>
+                        La mayoría de las simulaciones se realizaron con VPN, lo que representa
+                        un mayor uso de comunicación protegida dentro del sistema.
+                    </p>
+                }
+                else
+                {
+                    <p>
+                        Se registran más simulaciones sin VPN. Esto permite analizar el riesgo
+                        de enviar información sin cifrado ni protección de IP.
+                    </p>
+                }
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2 class="section-title">Interpretación educativa</h2>
+
+            <div class="analysis-list">
+                <div class="analysis-item">
+                    <span>🔐</span>
+                    <p>
+                        Las simulaciones con VPN representan una comunicación protegida,
+                        donde el mensaje se cifra antes de viajar por la red.
+                    </p>
+                </div>
+
+                <div class="analysis-item">
+                    <span>🌐</span>
+                    <p>
+                        Las simulaciones sin VPN representan una comunicación expuesta,
+                        donde el mensaje puede quedar visible durante el recorrido.
+                    </p>
+                </div>
+
+                <div class="analysis-item">
+                    <span>📁</span>
+                    <p>
+                        Cada simulación queda almacenada en SQL Server mediante Entity Framework Core.
+                    </p>
+                </div>
+            </div>
+
+            <div class="dashboard-actions">
+                <a asp-controller="Home" asp-action="Simulador" class="btn-primary-soft">
+                    Nueva simulación
+                </a>
+
+                <a asp-controller="Home" asp-action="Historial" class="btn-secondary-soft">
+                    Ver historial
+                </a>
+            </div>
+        </div>
+
+    </div>
+
 </section>

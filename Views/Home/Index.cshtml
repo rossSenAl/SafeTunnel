@@ -1,41 +1,85 @@
-﻿<section class="hero">
-    <div>
-        <span class="tag">Frontend ASP.NET MVC</span>
-        <h1>SafeTunnel</h1>
-        <h2>Simulador educativo de comunicación segura mediante VPN</h2>
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Inicio";
+}
 
-        <p>
-            Este sistema representa visualmente cómo viaja un mensaje sin VPN y con VPN.
-            En esta primera etapa funciona como frontend con datos simulados.
+<section class="grid-2">
+    <div class="panel">
+        <span class="badge-soft">Frontend ASP.NET MVC</span>
+
+        <h1 class="page-title">SafeTunnel</h1>
+
+        <div class="page-subtitle">
+            Simulador educativo de comunicación segura mediante VPN
+        </div>
+
+        <p class="page-text">
+            SafeTunnel permite visualizar de forma sencilla cómo viajan los datos
+            cuando se envían sin protección y cómo cambia el proceso cuando se utiliza
+            una conexión VPN simulada.
         </p>
 
-        <a class="btn primary" asp-controller="Home" asp-action="Simulador">
-            Iniciar simulación
-        </a>
+        <p class="page-text">
+            El sistema integra conceptos de Ingeniería de Software, Redes 3 y Seguridad
+            de Sistemas mediante una aplicación web con simulación visual, cifrado,
+            rutas de comunicación y análisis de riesgo.
+        </p>
+
+        <div class="hero-actions">
+            <a asp-controller="Home" asp-action="Simulador" class="btn-primary-soft">
+                Iniciar simulación
+            </a>
+        </div>
     </div>
 
-    <div class="hero-card">
-        <div class="status danger">Sin VPN: datos visibles</div>
-        <p>Usuario → Router → Internet → Servidor final</p>
+    <div class="panel">
+        <h2 style="margin-top:0; color:#13254b;">Comparación rápida</h2>
 
-        <div class="status success">Con VPN: datos protegidos</div>
-        <p>Usuario → Router → Túnel VPN → Servidor VPN → Servidor final</p>
+        <div class="status-box red">
+            Sin VPN: datos visibles
+        </div>
+        <div class="route-line">
+            Usuario → Router → Internet público → Servidor final
+        </div>
+
+        <div class="status-box green">
+            Con VPN: datos protegidos
+        </div>
+        <div class="route-line">
+            Usuario → Router → Túnel VPN cifrado → Servidor VPN → Servidor final
+        </div>
+
+        <p class="page-text">
+            Esta comparación ayuda a comprender por qué una VPN puede proteger la
+            información durante la transmisión.
+        </p>
     </div>
 </section>
 
-<section class="grid-3">
-    <article class="card">
-        <h3>Ingeniería de Software</h3>
-        <p>Interfaz web, formulario, módulos, navegación y presentación visual.</p>
-    </article>
+<section style="margin-top:28px;">
+    <div class="grid-3">
+        <div class="info-card">
+            <h3>Ingeniería de Software</h3>
+            <p>
+                Desarrollo de interfaz web, formularios, navegación, controladores,
+                vistas, validaciones y estructura del sistema.
+            </p>
+        </div>
 
-    <article class="card">
-        <h3>Seguridad de Sistemas</h3>
-        <p>Cifrado educativo, nivel de riesgo y recomendaciones de seguridad.</p>
-    </article>
+        <div class="info-card">
+            <h3>Seguridad de Sistemas</h3>
+            <p>
+                Cifrado de mensajes, protección de datos, análisis de riesgo,
+                recomendaciones e integridad de la información.
+            </p>
+        </div>
 
-    <article class="card">
-        <h3>Redes 3</h3>
-        <p>IP origen, IP destino, router, servidor VPN y túnel seguro.</p>
-    </article>
+        <div class="info-card">
+            <h3>Redes 3</h3>
+            <p>
+                Representación de IP origen, IP destino, router, paquetes,
+                servidor VPN y túnel seguro de comunicación.
+            </p>
+        </div>
+    </div>
 </section>
