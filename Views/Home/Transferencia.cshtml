@@ -1,0 +1,180 @@
+﻿@{
+    ViewData["Title"] = "Transferencia P2P";
+}
+
+<div class="container mt-4">
+    <h2>Transferencia de Archivos Punto a Punto</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">📤 Emisor</div>
+                <div class="card-body">
+                    <button id="generarBtn" class="btn btn-outline-primary">Generar sala</button>
+                    <input type="text" id="codigoSala" class="form-control mt-2" readonly />
+                    <input type="file" id="archivoInput" class="form-control mt-2" />
+                    <button id="enviarBtn" class="btn btn-success mt-2" disabled>Enviar archivo</button>
+                    <div id="progresoArea" class="mt-3" style="display:none;">
+                        <div class="progress"><div id="progresoBar" class="progress-bar" style="width:0%">0%</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">📥 Receptor</div>
+                <div class="card-body">
+                    <div class="input-group">
+                        <input type="text" id="codigoUnirse" class="form-control" placeholder="Código de sala" />
+                        <button id="unirseBtn" class="btn btn-outline-info">Unirse</button>
+                    </div>
+                    <div id="receptorInfo" style="display:none;" class="mt-3">
+                        <p><strong>Archivo:</strong> <span id="nombreArchivo"></span></p>
+                        <div class="progress"><div id="receptorProgreso" class="progress-bar bg-success" style="width:0%">0%</div></div>
+                        <button id="descargarBtn" class="btn btn-secondary mt-2" style="display:none;">Descargar archivo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        (function() {
+            let connection = null;
+            let currentSala = "";
+            let fragmentosRecibidos = [];
+            let totalFragmentos = 0;
+            let nombreArchivo = "";
+            let blobFinal = null;
+
+            // Función para convertir ArrayBuffer a Base64 de forma eficiente
+            function arrayBufferToBase64(buffer) {
+                let binary = '';
+                const bytes = new Uint8Array(buffer);
+                const len = bytes.byteLength;
+                for (let i = 0; i < len; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+                return btoa(binary);
+            }
+
+            // Función para convertir Base64 a ArrayBuffer
+            function base64ToArrayBuffer(base64) {
+                const binary_string = atob(base64);
+                const len = binary_string.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binary_string.charCodeAt(i);
+                }
+                return bytes.buffer;
+            }
+
+            async function iniciarConexion() {
+                if (connection && connection.state === signalR.HubConnectionState.Connected) return connection;
+                connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/simulacionHub")
+                    .withAutomaticReconnect()
+                    .build();
+                await connection.start();
+                console.log("✅ Conectado al hub");
+                return connection;
+            }
+
+            // Emisor
+            document.getElementById("generarBtn").onclick = async () => {
+                const conn = await iniciarConexion();
+                const sala = Math.floor(100000 + Math.random() * 900000).toString();
+                currentSala = sala;
+                document.getElementById("codigoSala").value = sala;
+                await conn.invoke("UnirseATransferencia", sala);
+                document.getElementById("enviarBtn").disabled = false;
+                alert("Sala creada: " + sala);
+            };
+
+            document.getElementById("enviarBtn").onclick = async () => {
+                const fileInput = document.getElementById("archivoInput");
+                const file = fileInput.files[0];
+                if (!file) return alert("Selecciona un archivo");
+                const CHUNK_SIZE = 8192; // 8 KB
+                const total = Math.ceil(file.size / CHUNK_SIZE);
+                const conn = await iniciarConexion();
+                try {
+                    await conn.invoke("EnviarMetadatos", currentSala, file.name, file.size, total);
+                    console.log("Metadatos enviados correctamente");
+                } catch (err) {
+                    console.error("Error al enviar metadatos:", err);
+                    return;
+                }
+                document.getElementById("progresoArea").style.display = "block";
+                let enviados = 0;
+                for (let i = 0; i < total; i++) {
+                    const start = i * CHUNK_SIZE;
+                    const end = Math.min(start + CHUNK_SIZE, file.size);
+                    const chunk = file.slice(start, end);
+                    const buffer = await chunk.arrayBuffer();
+                    const base64 = arrayBufferToBase64(buffer);
+                    try {
+                        await conn.invoke("EnviarFragmento", currentSala, i, base64, i === total - 1);
+                        enviados++;
+                        const pct = (enviados / total) * 100;
+                        document.getElementById("progresoBar").style.width = pct + "%";
+                        document.getElementById("progresoBar").textContent = Math.floor(pct) + "%";
+                    } catch (err) {
+                        console.error(`Error enviando fragmento ${i}:`, err);
+                        break;
+                    }
+                }
+                if (enviados === total) console.log("Envío completado exitosamente");
+            };
+
+            // Receptor
+            document.getElementById("unirseBtn").onclick = async () => {
+                const sala = document.getElementById("codigoUnirse").value.trim();
+                if (!sala) return;
+                const conn = await iniciarConexion();
+                await conn.invoke("UnirseATransferencia", sala);
+                currentSala = sala;
+                document.getElementById("receptorInfo").style.display = "block";
+                alert("Unido a sala " + sala);
+            };
+
+            // Escuchar eventos del hub (registro único)
+            (async () => {
+                const conn = await iniciarConexion();
+                conn.on("RecibirMetadatos", (nombre, tamaño, total) => {
+                    totalFragmentos = total;
+                    nombreArchivo = nombre;
+                    fragmentosRecibidos = new Array(total);
+                    document.getElementById("nombreArchivo").innerHTML = `${nombre} (${(tamaño/1024).toFixed(2)} KB)`;
+                    document.getElementById("receptorProgreso").style.width = "0%";
+                    document.getElementById("descargarBtn").style.display = "none";
+                });
+                conn.on("RecibirFragmento", (secuencia, base64Datos, esUltimo) => {
+                    console.log(`Receptor: fragmento ${secuencia} recibido, longitud Base64 ${base64Datos.length}`);
+                    const arrayBuffer = base64ToArrayBuffer(base64Datos);
+                    fragmentosRecibidos[secuencia] = new Uint8Array(arrayBuffer);
+                    const recibidos = fragmentosRecibidos.filter(f => f !== undefined).length;
+                    const pct = (recibidos / totalFragmentos) * 100;
+                    document.getElementById("receptorProgreso").style.width = pct + "%";
+                    document.getElementById("receptorProgreso").textContent = Math.floor(pct) + "%";
+                    if (recibidos === totalFragmentos) {
+                        blobFinal = new Blob(fragmentosRecibidos, { type: "application/octet-stream" });
+                        document.getElementById("descargarBtn").style.display = "inline-block";
+                    }
+                });
+                document.getElementById("descargarBtn").onclick = () => {
+                    if (blobFinal) {
+                        const url = URL.createObjectURL(blobFinal);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = nombreArchivo;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    }
+                };
+            })();
+        })();
+    </script>
+}

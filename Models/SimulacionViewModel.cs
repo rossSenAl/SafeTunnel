@@ -34,6 +34,17 @@ namespace SafeTunnel.Models
         public bool IntegridadValida { get; set; }
 
         public string MensajeInterceptado { get; set; } = string.Empty;
-      
+
+        // En Models/SimulacionViewModel.cs
+        public string? CifradoRSA { get; set; }
+        public string? FirmaDigital { get; set; }
+        public string? HuellaRSA { get; set; }
+        public int? LatenciaMs { get; set; }
+        public int? PaquetesPerdidos { get; set; }
+        public int? Retransmisiones { get; set; }
+        public string? CalidadConexion { get; set; }
+        public TipoAtaque AtaqueSeleccionado { get; set; } = TipoAtaque.Ninguno;
+        public string? AlertaAtaque { get; set; }
+        public string? SalaId { get; set; }   // Para SignalR
     }
 }

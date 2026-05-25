@@ -2,12 +2,123 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Dashboard";
 
-    int total = Convert.ToInt32(ViewBag.Total ?? 0);
-    int conVpn = Convert.ToInt32(ViewBag.ConVPN ?? 0);
-    int sinVpn = Convert.ToInt32(ViewBag.SinVPN ?? 0);
-
+    int total = ViewBag.Total ?? 0;
+    int conVpn = ViewBag.ConVPN ?? 0;
+    int sinVpn = ViewBag.SinVPN ?? 0;
     int porcentajeConVpn = total > 0 ? (conVpn * 100 / total) : 0;
     int porcentajeSinVpn = total > 0 ? (sinVpn * 100 / total) : 0;
+}
+
+@section Scripts {
+    <script>
+        // Gráfico de Dona (VPN vs No VPN)
+        const ctxDona = document.getElementById('vpnDoughnutChart');
+        if (ctxDona) {
+            new Chart(ctxDona, {
+                type: 'doughnut',
+                data: {
+                    labels: ['🔐 Con VPN', '🌐 Sin VPN'],
+                    datasets: [{
+                        data: [@conVpn, @sinVpn],
+                        backgroundColor: ['#22c55e', '#ef4444'],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 14, weight: 'bold' },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = (`@total`);
+                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Barras (riesgo)
+        const ctxBarras = document.getElementById('riesgoBarChart');
+        if (ctxBarras) {
+            new Chart(ctxBarras, {
+                type: 'bar',
+                data: {
+                    labels: ['Riesgo Bajo', 'Riesgo Medio', 'Riesgo Alto', 'Riesgo Crítico'],
+                    datasets: [{
+                        label: 'Cantidad de simulaciones',
+                        data: [@ViewBag.RiesgoBajo, @ViewBag.RiesgoMedio, @ViewBag.RiesgoAlto, @ViewBag.RiesgoCritico],
+                        backgroundColor: ['#22c55e', '#eab308', '#f97316', '#ef4444'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Número de simulaciones' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Nivel de riesgo' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Medidor de nivel de riesgo (gauge)
+        const riesgo = (@porcentajeSinVpn);
+        const ctxGauge = document.getElementById('riesgoGauge');
+        if (ctxGauge) {
+            new Chart(ctxGauge, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [riesgo, 100 - riesgo],
+                        backgroundColor: ['#ef4444', '#e5e7eb'],
+                        circumference: 180,
+                        rotation: 270,
+                        cutout: '70%',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        tooltip: { enabled: false },
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Agregar texto central
+            const texto = document.getElementById('riesgoTexto');
+            if (texto) {
+                texto.innerHTML = `${riesgo}%<span style="font-size: 12px; display: block;">riesgo</span>`;
+            }
+        }
+    </script>
 }
 
 <section class="dashboard-page">
@@ -20,20 +131,17 @@
                 Resumen general de las simulaciones realizadas en SafeTunnel.
             </p>
         </div>
-
-        <div class="dashboard-icon">
-            📊
-        </div>
+        <div class="dashboard-icon">📊</div>
     </div>
 
+    <!-- Tarjetas de estadísticas -->
     <div class="dashboard-grid">
-
         <div class="dashboard-card total">
             <div class="dashboard-card-icon">🧪</div>
             <div>
                 <span>Total de simulaciones</span>
                 <strong>@total</strong>
-                <p>Registros generados en el sistema.</p>
+                <p>Registros generados en el sistema</p>
             </div>
         </div>
 
@@ -42,7 +150,7 @@
             <div>
                 <span>Con VPN</span>
                 <strong>@conVpn</strong>
-                <p>Mensajes enviados mediante túnel VPN simulado.</p>
+                <p>Mensajes protegidos (@porcentajeConVpn%)</p>
             </div>
         </div>
 
@@ -51,12 +159,66 @@
             <div>
                 <span>Sin VPN</span>
                 <strong>@sinVpn</strong>
-                <p>Mensajes enviados por red pública simulada.</p>
+                <p>Mensajes expuestos (@porcentajeSinVpn%)</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Gráficos principales -->
+    <div class="dashboard-analysis-grid">
+
+        <!-- Gráfico de Dona -->
+        <div class="panel" style="text-align: center;">
+            <h2 class="section-title">Comparativa VPN vs Sin VPN</h2>
+            <div style="max-width: 300px; margin: 0 auto;">
+                <canvas id="vpnDoughnutChart"></canvas>
+            </div>
+            <p style="margin-top: 15px; color: #5f6f8d;">
+                @if (conVpn >= sinVpn)
+                {
+                    <span>✅ La mayoría de las comunicaciones están protegidas</span>
+                }
+                else
+                {
+                    <span>⚠️ La mayoría de las comunicaciones están expuestas</span>
+                }
+            </p>
+        </div>
+
+        <!-- Medidor de riesgo -->
+        <div class="panel" style="text-align: center;">
+            <h2 class="section-title">Nivel de riesgo general</h2>
+            <div style="position: relative; max-width: 250px; margin: 0 auto;">
+                <canvas id="riesgoGauge"></canvas>
+                <div id="riesgoTexto" style="position: absolute; bottom: 25%; left: 0; right: 0; text-align: center; font-size: 28px; font-weight: bold; color: #ef4444;"></div>
+            </div>
+            <p style="margin-top: 20px; color: #5f6f8d;">
+                @if (porcentajeSinVpn > 60)
+                {
+                    <span>⚠️ <strong>Alto riesgo</strong> - La mayoría de las comunicaciones están expuestas</span>
+                }
+                else if (porcentajeSinVpn > 30)
+                {
+                    <span>⚠️ <strong>Riesgo moderado</strong> - Mejorable usando VPN</span>
+                }
+                else
+                {
+                    <span>✅ <strong>Bajo riesgo</strong> - Buen uso de protección VPN</span>
+                }
+            </p>
         </div>
 
     </div>
 
+    <!-- Gráfico de barras de riesgo -->
+    <div class="panel">
+        <h2 class="section-title">Distribución por nivel de riesgo</h2>
+        <div style="max-height: 350px;">
+            <canvas id="riesgoBarChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Análisis y acciones -->
     <div class="dashboard-analysis-grid">
 
         <div class="panel">
@@ -67,7 +229,6 @@
                     <span>Uso de VPN</span>
                     <strong>@porcentajeConVpn%</strong>
                 </div>
-
                 <div class="progress-track">
                     <div class="progress-fill secure" style="width:@porcentajeConVpn%"></div>
                 </div>
@@ -78,7 +239,6 @@
                     <span>Envíos sin protección</span>
                     <strong>@porcentajeSinVpn%</strong>
                 </div>
-
                 <div class="progress-track">
                     <div class="progress-fill danger" style="width:@porcentajeSinVpn%"></div>
                 </div>
@@ -87,63 +247,46 @@
             <div class="dashboard-note">
                 @if (total == 0)
                 {
-                    <p>
-                        Todavía no existen simulaciones registradas. Dirígete al simulador
-                        para generar los primeros datos del sistema.
-                    </p>
+                    <p>📭 Todavía no existen simulaciones registradas. Dirígete al simulador para comenzar.</p>
                 }
                 else if (conVpn >= sinVpn)
                 {
-                    <p>
-                        La mayoría de las simulaciones se realizaron con VPN, lo que representa
-                        un mayor uso de comunicación protegida dentro del sistema.
-                    </p>
+                    <p>✅ <strong>Buena práctica de seguridad</strong> - La mayoría de las simulaciones usan VPN, lo que representa comunicación protegida.</p>
                 }
                 else
                 {
-                    <p>
-                        Se registran más simulaciones sin VPN. Esto permite analizar el riesgo
-                        de enviar información sin cifrado ni protección de IP.
-                    </p>
+                    <p>⚠️ <strong>Área de mejora</strong> - Hay más simulaciones sin VPN. Recuerda que una VPN cifra tus datos y oculta tu IP.</p>
                 }
             </div>
         </div>
 
         <div class="panel">
-            <h2 class="section-title">Interpretación educativa</h2>
+            <h2 class="section-title">Acciones rápidas</h2>
 
             <div class="analysis-list">
                 <div class="analysis-item">
-                    <span>🔐</span>
-                    <p>
-                        Las simulaciones con VPN representan una comunicación protegida,
-                        donde el mensaje se cifra antes de viajar por la red.
-                    </p>
+                    <span>🚀</span>
+                    <p>Realiza una nueva simulación para comparar VPN vs Sin VPN</p>
                 </div>
-
                 <div class="analysis-item">
-                    <span>🌐</span>
-                    <p>
-                        Las simulaciones sin VPN representan una comunicación expuesta,
-                        donde el mensaje puede quedar visible durante el recorrido.
-                    </p>
+                    <span>📋</span>
+                    <p>Revisa el historial completo de todas las simulaciones</p>
                 </div>
-
                 <div class="analysis-item">
-                    <span>📁</span>
-                    <p>
-                        Cada simulación queda almacenada en SQL Server mediante Entity Framework Core.
-                    </p>
+                    <span>🛡️</span>
+                    <p>Consulta las recomendaciones de seguridad para mejorar tus prácticas</p>
                 </div>
             </div>
 
             <div class="dashboard-actions">
                 <a asp-controller="Home" asp-action="Simulador" class="btn-primary-soft">
-                    Nueva simulación
+                    🚀 Nueva simulación
                 </a>
-
                 <a asp-controller="Home" asp-action="Historial" class="btn-secondary-soft">
-                    Ver historial
+                    📋 Ver historial
+                </a>
+                <a asp-controller="Home" asp-action="Recomendaciones" class="btn-secondary-soft">
+                    🛡️ Recomendaciones
                 </a>
             </div>
         </div>

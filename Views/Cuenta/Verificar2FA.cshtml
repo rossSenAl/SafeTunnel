@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Verificación en dos pasos";
+}
+
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-icon">📧</div>
+            <h1>Código de verificación</h1>
+            <p>Ingresa el código de 6 dígitos que enviamos a tu correo</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            @Html.AntiForgeryToken()
+            <!-- Campo oculto para enviar el correo (necesario si TempData falla) -->
+            <input type="hidden" name="correo" value="@ViewBag.Correo" />
+
+            <label>Código</label>
+            <input type="text" name="codigo" class="form-control" placeholder="000000" required autofocus maxlength="6" />
+            <button type="submit" class="auth-button">Verificar</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>¿No recibiste el código? <a href="@Url.Action("Login")">Reenviar</a></p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,287 @@
+﻿/* ============================================
+   TEMA INGENIERÍA DE SISTEMAS - CYBER/HACKER
+   ============================================ */
+
+:root {
+    --bg-primary: #0a0c10;
+    --bg-secondary: #11151c;
+    --bg-card: rgba(18, 25, 40, 0.85);
+    --border-neon: #00ff88;
+    --border-blue: #0088ff;
+    --border-purple: #aa00ff;
+    --text-primary: #e0e0e0;
+    --text-secondary: #8899aa;
+    --neon-green: #00ff88;
+    --neon-blue: #0088ff;
+    --neon-purple: #aa00ff;
+    --glow-green: 0 0 5px #00ff88, 0 0 10px #00ff88;
+    --glow-blue: 0 0 5px #0088ff, 0 0 10px #0088ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    position: relative;
+}
+
+    /* Fondo con rejilla (grilla tecnológica) */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+/* Layout shell */
+.layout-shell {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Topbar (barra de navegación estilo terminal) */
+.topbar {
+    background: rgba(10, 12, 16, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-neon);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.brand {
+    color: var(--neon-green);
+    text-shadow: var(--glow-green);
+    font-weight: bold;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+}
+
+.main-nav a {
+    color: var(--text-primary);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+    .main-nav a::before {
+        content: ">";
+        margin-right: 5px;
+        color: var(--neon-green);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .main-nav a:hover::before {
+        opacity: 1;
+    }
+
+    .main-nav a:hover {
+        color: var(--neon-green);
+        text-shadow: var(--glow-green);
+    }
+
+/* Tarjetas con efecto vidrio y borde neón */
+.panel, .sim-form-card, .sim-visual-card, .sim-result-card, .sim-education-card,
+.dashboard-card, .history-stat-card, .recommendation-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 255, 136, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+}
+
+    .panel:hover, .sim-result-card:hover {
+        border-color: var(--neon-green);
+        box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        transform: translateY(-4px);
+    }
+
+/* Títulos tipo "código" */
+h1, h2, h3, .page-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.page-title {
+    font-size: 2.8rem;
+    background: linear-gradient(135deg, #00ff88, #0088ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+
+.page-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    border-left: 3px solid var(--neon-green);
+    padding-left: 15px;
+}
+
+/* Botones estilo "cyber" */
+.btn-primary-soft, .btn-secondary-soft, .auth-button, .btn-danger-soft {
+    background: transparent;
+    border: 1.5px solid var(--neon-green);
+    color: var(--neon-green);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+    .btn-primary-soft::before, .auth-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--neon-green);
+        transition: left 0.3s;
+        z-index: -1;
+    }
+
+    .btn-primary-soft:hover::before, .auth-button:hover::before {
+        left: 0;
+    }
+
+    .btn-primary-soft:hover, .auth-button:hover {
+        color: #000;
+        box-shadow: var(--glow-green);
+    }
+
+.btn-danger-soft {
+    border-color: #ff3366;
+    color: #ff3366;
+}
+
+    .btn-danger-soft::before {
+        background: #ff3366;
+    }
+
+    .btn-danger-soft:hover {
+        color: #000;
+        box-shadow: 0 0 15px #ff3366;
+    }
+
+/* Inputs estilo terminal */
+input, textarea, select {
+    background: #0a0f1a;
+    border: 1px solid #2a3a5a;
+    color: var(--neon-green);
+    font-family: 'JetBrains Mono', monospace;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+    input:focus, textarea:focus {
+        border-color: var(--neon-green);
+        box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        outline: none;
+    }
+
+/* Modo VPN / Sin VPN pills */
+.mode-pill.secure {
+    background: rgba(0, 255, 136, 0.2);
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    text-shadow: var(--glow-green);
+}
+
+.mode-pill.danger {
+    background: rgba(255, 51, 102, 0.2);
+    border: 1px solid #ff3366;
+    color: #ff3366;
+}
+
+/* Animación de escritura (typewriter) para resultados */
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.message-box {
+    font-family: 'JetBrains Mono', monospace;
+    background: #0a0f1a;
+    border-left: 3px solid var(--neon-green);
+}
+
+/* Dashboard mejorado */
+.dashboard-card .dashboard-card-icon {
+    filter: drop-shadow(0 0 5px var(--neon-green));
+}
+
+.progress-fill.secure {
+    background: linear-gradient(90deg, #00ff88, #00cc66);
+    box-shadow: 0 0 5px #00ff88;
+}
+
+.progress-fill.danger {
+    background: linear-gradient(90deg, #ff3366, #cc0044);
+    box-shadow: 0 0 5px #ff3366;
+}
+
+/* Footer */
+.site-footer {
+    border-top: 1px solid rgba(0, 255, 136, 0.3);
+    font-family: monospace;
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 20px;
+    color: #4a5a6e;
+}
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1f2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--neon-green);
+    border-radius: 4px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #00cc66;
+    }
+.message-box.ataque {
+    background: #330000;
+    color: #ff8888;
+    border-left: 4px solid #ff3366;
+    box-shadow: 0 0 5px rgba(255, 51, 102, 0.5);
+}

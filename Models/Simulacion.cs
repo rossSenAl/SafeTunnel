@@ -35,5 +35,17 @@ namespace SafeTunnel.Models
         public bool AtaqueSimulado { get; set; }
 
         public string MensajeInterceptado { get; set; } = string.Empty;
+
+        // En Models/Simulacion.cs
+        public string? CifradoRSA { get; set; }
+        public string? FirmaDigital { get; set; }
+        public string? HuellaRSA { get; set; }
+        public int? LatenciaMs { get; set; }
+        public int? PaquetesPerdidos { get; set; }
+        public int? Retransmisiones { get; set; }
+        public string? CalidadConexion { get; set; }
+        public string? TipoAtaqueEjecutado { get; set; }
+        public string? AlertaAtaque { get; set; }
+        public int? LatenciaAtaqueMs { get; set; }
     }
 }

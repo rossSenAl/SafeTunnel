@@ -21,5 +21,9 @@ namespace SafeTunnel.Models
         public string Rol { get; set; } = "Usuario";
 
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
+
+        // Campos para 2FA
+        public string? Codigo2FA { get; set; }
+        public DateTime? Codigo2FAExpiracion { get; set; }
     }
 }

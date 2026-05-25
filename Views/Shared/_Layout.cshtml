@@ -6,39 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="topbar">
-        <div class="layout-shell nav-shell">
-            <a class="brand" asp-controller="Home" asp-action="Index">
-                <span class="brand-icon">🔐</span>
-                <span>SafeTunnel</span>
-            </a>
 
-            <nav class="main-nav">
-                <a asp-controller="Home" asp-action="Index">Inicio</a>
-                <a asp-controller="Home" asp-action="Simulador">Simulador</a>
-                <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
-                <a asp-controller="Home" asp-action="Historial">Historial</a>
-                <a asp-controller="Home" asp-action="Recomendaciones">Recomendaciones</a>
+    @{
+        // Ocultar barra de navegación y footer en Login y Registro
+        var esLoginORegistro = ViewContext.RouteData.Values["controller"]?.ToString() == "Cuenta" &&
+        (ViewContext.RouteData.Values["action"]?.ToString() == "Login" ||
+        ViewContext.RouteData.Values["action"]?.ToString() == "Registro");
+    }
 
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                {
-                    <span class="usuario-logueado">👤 @User.Identity.Name</span>
+    @if (!esLoginORegistro)
+    {
+        <header class="topbar">
+            <div class="layout-shell nav-shell">
+                <a class="brand" asp-controller="Home" asp-action="Index">
+                    <span class="brand-icon">🔐</span>
+                    <span>SafeTunnel</span>
+                </a>
 
-                    <form asp-controller="Cuenta" asp-action="Logout" method="post" class="logout-form">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn-logout">Salir</button>
-                    </form>
-                }
-                else
-                {
-                    <a asp-controller="Cuenta" asp-action="Login">Login</a>
-                    <a asp-controller="Cuenta" asp-action="Registro">Registro</a>
-                }
-            </nav>
-        </div>
-    </header>
+                <nav class="main-nav">
+                    <a asp-controller="Home" asp-action="Index">Inicio</a>
+                    <a asp-controller="Home" asp-action="Simulador">Simulador</a>
+                    <a asp-controller="Home" asp-action="Dashboard">Dashboard</a>
+                    <a asp-controller="Home" asp-action="Historial">Historial</a>
+                    <a asp-controller="Home" asp-action="Recomendaciones">Recomendaciones</a>
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <span class="usuario-logueado">👤 @User.Identity.Name</span>
+
+                        <form asp-controller="Cuenta" asp-action="Logout" method="post" class="logout-form">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn-logout">Salir</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Cuenta" asp-action="Login">Login</a>
+                        <a asp-controller="Cuenta" asp-action="Registro">Registro</a>
+                    }
+                </nav>
+            </div>
+        </header>
+    }
 
     <main class="main-content">
         <div class="layout-shell page-shell">
@@ -46,12 +58,16 @@
         </div>
     </main>
 
-    <footer class="site-footer">
-        <div class="layout-shell">
-            SafeTunnel: aprendizaje interactivo sobre VPN, cifrado y comunicación segura.
-        </div>
-    </footer>
-
+    @if (!esLoginORegistro)
+    {
+        <footer class="site-footer">
+            <div class="layout-shell">
+                SafeTunnel: aprendizaje interactivo sobre VPN, cifrado y comunicación segura.
+            </div>
+        </footer>
+    }
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/css/engineering-theme.css" asp-append-version="true" />
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

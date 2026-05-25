@@ -70,10 +70,24 @@ namespace SafeTunnel.Services
 
         public string GenerarHash(string texto)
         {
-            byte[] bytes = Encoding.UTF8.GetBytes(texto);
-            byte[] hash = SHA256.HashData(bytes);
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(texto);
+                byte[] hash = sha256.ComputeHash(bytes);
+                return Convert.ToHexString(hash); // mayúsculas fijas
+            }
+        }
 
-            return Convert.ToHexString(hash);
+        /// <summary>
+        /// Compara dos hashes de forma segura (sin distinción de mayúsculas/minúsculas y neutral cultural)
+        /// </summary>
+        public bool VerificarHash(string texto, string hashAlmacenado)
+        {
+            if (string.IsNullOrEmpty(texto) || string.IsNullOrEmpty(hashAlmacenado))
+                return false;
+
+            string hashCalculado = GenerarHash(texto);
+            return string.Equals(hashCalculado, hashAlmacenado, StringComparison.OrdinalIgnoreCase);
         }
 
         public static string Encrypt(string text)

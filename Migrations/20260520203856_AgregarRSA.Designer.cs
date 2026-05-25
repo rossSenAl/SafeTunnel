@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SafeTunnel.Data;
 
@@ -11,9 +12,11 @@ using SafeTunnel.Data;
 namespace SafeTunnel.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260520203856_AgregarRSA")]
+    partial class AgregarRSA
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,14 +33,8 @@ namespace SafeTunnel.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AlertaAtaque")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("AtaqueSimulado")
                         .HasColumnType("bit");
-
-                    b.Property<string>("CalidadConexion")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CifradoRSA")
                         .HasColumnType("nvarchar(max)");
@@ -74,12 +71,6 @@ namespace SafeTunnel.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LatenciaAtaqueMs")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LatenciaMs")
-                        .HasColumnType("int");
-
                     b.Property<string>("MensajeInterceptado")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -96,15 +87,9 @@ namespace SafeTunnel.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PaquetesPerdidos")
-                        .HasColumnType("int");
-
                     b.Property<string>("Recomendacion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Retransmisiones")
-                        .HasColumnType("int");
 
                     b.Property<string>("Riesgo")
                         .IsRequired()
@@ -112,9 +97,6 @@ namespace SafeTunnel.Migrations
 
                     b.Property<string>("Ruta")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TipoAtaqueEjecutado")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -193,12 +175,6 @@ namespace SafeTunnel.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Codigo2FA")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Codigo2FAExpiracion")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Correo")
                         .IsRequired()
